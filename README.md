@@ -11,7 +11,13 @@ Also make sure that you have the sample-data submodule cloned.
 git submodule update --init --recursive
 ```
 
+# Examples of echogram
+There is an example of plotting a echogram but the procedure is not verified. 
+You will get an output that will look plausible at least.
 
+![example echogram][output1]
+
+[output1]: images/output1.png "Example from SL2 file"
 # Usage with Makefiles
 ```shell
 make build
@@ -36,3 +42,4 @@ docker run --rm -p 8888:8888 -e JUPYTER_ENABLE_LAB=yes `
     -v "${PWD}:/home/jovyan/work" `
     sllib-scipy-notebook
 ```
+
