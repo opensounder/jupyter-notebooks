@@ -34,3 +34,19 @@ def read_echogram(input_file):
     return data, echogram
 
 
+def read_xyz(input_file):
+    x = []
+    y = []
+    z = []
+    with open(input_file, 'rb') as f:
+        reader = sllib.Reader(f)
+        last = None
+        for frame in reader:
+            c = (frame.longitude, frame.latitude)
+            if c != last:
+                y.append(frame.latitude)
+                x.append(frame.longitude)
+                z.append(frame.water_depth_m)
+                last = c
+    return (x,y,z)
+      
