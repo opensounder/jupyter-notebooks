@@ -1,4 +1,7 @@
 .ipynb_checkpoints
 Untitled*.ipynb
-venv/
+__pycache__/
+*.pyc
+
 private/
+venv/
