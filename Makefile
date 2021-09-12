@@ -1,5 +1,5 @@
 
-REPO?=
+REPO?=kmpm/
 IMAGE=sllib-scipy-notebook
 TAGNAME=$(REPO)$(IMAGE)
 
@@ -15,6 +15,11 @@ run:
 build:
 	docker build -t $(TAGNAME) -f containers/Dockerfile containers/
 
+
 .PHONY: kill
 kill:
 	docker kill $(IMAGE)
+
+.PHONY: clean
+clean:
+	docker rm $(IMAGE)

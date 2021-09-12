@@ -1,22 +1,31 @@
 FROM jupyter/scipy-notebook
 
+RUN conda config --append channels conda-forge
+
+
 # leaflet
-RUN conda install -c conda-forge ipyleaflet
+RUN conda install ipyleaflet
 RUN jupyter labextension install @jupyter-widgets/jupyterlab-manager jupyter-leaflet
 
 # dependencies/utilities from conda 
-RUN conda install -c conda-forge geopandas descartes 
-
-# something is not working as it should with rasterio
-# RUN conda install -c conda-forge rasterio
+RUN conda install  geopandas descartes 
 
 # install verde and dependencies
-RUN conda install verde --channel conda-forge
-RUN conda install -c conda-forge cartopy
-RUN conda install -c conda-forge pyproj
+RUN conda install  verde
+RUN conda install  pyproj
+# RUN conda install -c conda-forge cartopy
+
+# rasterio
+RUN conda install rasterio
+
+# tqdm
+RUN pip install ipywidgets
+RUN conda install -c conda-forge tqdm
+RUN jupyter nbextension enable --py widgetsnbextension
+RUN jupyter labextension install @jupyter-widgets/jupyterlab-manager
 
 WORKDIR /home/jovyan/work
 
-# sllib
+# requirements
 COPY requirements.txt /tmp/requirements.txt
 RUN pip3 install -r /tmp/requirements.txt

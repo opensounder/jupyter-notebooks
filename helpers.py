@@ -1,8 +1,13 @@
 import struct
+import os
 import numpy as np
 from matplotlib import pyplot as plt
 import sllib
 
+
+from tqdm import tqdm_notebook as tqdm
+tqdm().pandas()
+#from tqdm import tqdm
 
 def unpack(frame):
     l = len(frame.packet)
@@ -14,13 +19,26 @@ def unpack(frame):
     return temp
 
 
-def read_echogram(input_file):
+def read_echogram(input_file, channels=None):
+    used = 0
+    counter = 0
+    filesize = os.path.getsize(input_file)
+    pbar = tqdm(total=filesize, unit='B', unit_scale=True)
+    info =  {'header': '', 'channels': [0] * 10}
+    offset = 0
     with open(input_file, "rb") as f:
         reader = sllib.Reader(f)
         header = reader.header
-        print(header)
+        info['header'] = f'{header}'
+        if channels:
+            reader.add_filter(channels=channels)
         data = []
         for frame in reader:
+            info['channels'][frame.channel] += 1
+            pbar.update(reader.tell()-offset)
+            offset = reader.tell()
+            
+            counter += 1
             data.append(frame.to_dict())
             # the code to unpack the data packet
             temp = unpack(frame)
@@ -28,9 +46,16 @@ def read_echogram(input_file):
                 continue
             try:
                 echogram = np.vstack((echogram, temp))
+                used +=1
             except NameError:
                 echogram = temp
+        pbar.update(reader.tell()-offset)
+    pbar.close()
+    if used == 0:
+        raise Exception('no frames used')
     echogram = echogram.T.astype("float32")
+    #print(info)
+    #print(f'frames used: {used}/{counter}')
     return data, echogram
 
 
